@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <title>OldStock-2017 Inventory</title>
+</head>
+
+<body onload="onLoad()">
+    <div class="header">
+        INVENTORY MANAGEMENT
+        <span style="position: absolute; right: 10px; font-size: 10px;"
+            onclick="location.href='login.html'">LOGOUT</span>
+    </div>
+
+    <div class="container">
+        <div style="margin-bottom: 10px;">
+            <input type="text" id="search-input" placeholder="Search items..." style="height: 35px;">
+            <button class="btn-legacy" style="width: 100%; margin-top: 5px;" onclick="searchItems()">SEARCH</button>
+        </div>
+
+        <div id="list-container">
+            <!-- Data will be injected here using innerHTML -->
+            <center style="margin-top: 50px; color: #999;">Loading stock data...</center>
+        </div>
+    </div>
+
+    <div class="footer">
+        <button class="btn-legacy" style="height: 35px; width: 45%; font-size: 11px;"
+            onclick="takePhoto()">CAMERA</button>
+        <button class="btn-legacy" style="height: 35px; width: 45%; font-size: 11px;"
+            onclick="scanBarcode()">SCANNER</button>
+    </div>
+
+    <div id="loading-overlay">
+        <img src="img/loading.gif">
+    </div>
+
+    <!-- Scripts at the bottom because "optimization" -->
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/cordova_mocks.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+</body>
+
+</html>

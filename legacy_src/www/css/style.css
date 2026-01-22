@@ -1,0 +1,100 @@
+/* OldStock-2017 Monolithic Style Sheet */
+body {
+    font-family: 'Dotum', 'Gulim', sans-serif;
+    font-size: 12px;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding-top: 50px; /* Fixed header offset */
+    padding-bottom: 50px; /* Fixed footer offset */
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 50px;
+    background: linear-gradient(#4facfe 0%, #00f2fe 100%);
+    color: white;
+    text-align: center;
+    line-height: 50px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+    background: #333;
+    color: #ccc;
+    text-align: center;
+    line-height: 50px;
+    z-index: 1000;
+}
+
+.container {
+    padding: 15px;
+}
+
+/* Skeuomorphic Button */
+.btn-legacy {
+    background: linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%);
+    border: 1px solid #999;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 1px 2px rgba(0,0,0,0.5);
+    color: #333;
+    font-weight: bold;
+    padding: 5px 10px;
+    text-shadow: 0 1px 0 #fff;
+    cursor: pointer;
+    outline: none;
+}
+
+.btn-legacy:active {
+    background: #ccc;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Inconvenient Form Styles */
+.form-group {
+    margin-bottom: 1px; /* Very narrow gap */
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    height: 30px; /* Small touch target */
+    border: 1px inset #ccc;
+    font-size: 12px;
+}
+
+/* Loading Overlay */
+#loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 9999;
+    vertical-align: middle;
+    text-align: center;
+}
+
+#loading-overlay img {
+    margin-top: 50%;
+    transform: translateY(-50%);
+    width: 100px;
+}
+
+.list-item {
+    border-bottom: 1px solid #ddd;
+    padding: 8px;
+    background: #fff;
+}
+
+.list-item:nth-child(even) {
+    background: #fafafa;
+}
