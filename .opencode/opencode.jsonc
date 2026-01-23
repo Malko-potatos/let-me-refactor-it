@@ -1,0 +1,16 @@
+{
+    "mcpServers": {
+        "stitch": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@_davideast/stitch-mcp",
+                "start"
+            ],
+            "env": {
+                // "GOOGLE_CLOUD_PROJECT": "your-project-id" // 필요시 주석 해제 후 설정
+            }
+        }
+        // ... 기존 설정 유지
+    }
+}
