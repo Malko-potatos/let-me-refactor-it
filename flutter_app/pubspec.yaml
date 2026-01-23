@@ -1,0 +1,51 @@
+name: inventory_nexus
+description: A modern, elegant inventory management application
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # UI & Design
+  cupertino_icons: ^1.0.6
+  google_fonts: ^6.1.0
+
+  # State Management
+  flutter_riverpod: ^2.4.9
+
+  # Networking
+  http: ^1.1.0
+
+  # Device Features
+  camera: ^0.11.0
+  mobile_scanner: ^5.0.0
+  vibration: ^2.0.0
+
+  # Storage
+  shared_preferences: ^2.2.2
+
+  # Animations & Effects
+  confetti: ^0.7.0
+  lottie: ^3.0.0
+
+  # Utilities
+  intl: ^0.18.1
+  path_provider: ^2.1.1
+  image_picker: ^1.0.5
+  equatable: ^2.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  build_runner: ^2.4.7
+  freezed: ^2.4.6
+  freezed_annotation: ^2.4.1
+
+flutter:
+  uses-material-design: true
+

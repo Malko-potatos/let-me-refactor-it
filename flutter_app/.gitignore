@@ -1,0 +1,69 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The Python Visual Studio Code extension generates these
+# files when running with "Python: Build Workspace Symbols"
+.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place separate commands in separate files
+/android/key.properties
+/android/local.properties
+/android/app/src/main/res/values/strings.xml
+/android/app/src/main/res/values/styles.xml
+/android/app/src/main/res/xml/network_security_config.xml
+
+# iOS related
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/ServiceDefinitions.json
+ios/Runner/GeneratedPluginRegistrant.h
+ios/Runner/GeneratedPluginRegistrant.m
+ios/Runner/GeneratedPluginRegistrant.swift
+
+# macOS related
+macos/Flutter/Generated.xcconfig
+macos/Flutter/flutter_export_environment.sh
+macos/Runner/GeneratedPluginRegistrant.h
+macos/Runner/GeneratedPluginRegistrant.m
+macos/Runner/GeneratedPluginRegistrant.swift
+
+# Web related
+lib/generated_plugin_registrant.dart
+
+# Coverage and cache
+coverage/
+
+# FVM Version Cache
+.fvm/
