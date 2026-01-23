@@ -1,0 +1,29 @@
+{
+    "intent": "SearchProducts",
+    "parameters": {
+        "keyword": "String",
+        "category": "String?"
+    },
+    "stateVariables": {
+        "searchKeyword": {
+            "type": "String",
+            "scope": "local",
+            "description": "현재 검색 입력 값"
+        },
+        "selectedCategory": {
+            "type": "String?",
+            "scope": "local",
+            "description": "선택된 카테고리 필터"
+        },
+        "searchResults": {
+            "type": "List<Product>",
+            "scope": "local",
+            "description": "검색 결과 목록"
+        },
+        "isSearching": {
+            "type": "bool",
+            "scope": "local",
+            "description": "검색 진행 상태"
+        }
+    }
+}

@@ -1,0 +1,46 @@
+{
+    "actions": {
+        "updateSearchKeyword": {
+            "parameters": [
+                {
+                    "name": "keyword",
+                    "type": "String"
+                }
+            ],
+            "returns": "void",
+            "description": "검색어 상태 업데이트",
+            "stateChanges": [
+                "searchKeyword"
+            ]
+        },
+        "performSearch": {
+            "parameters": [],
+            "returns": "Future<void>",
+            "async": true,
+            "description": "검색 API 호출 및 결과 업데이트",
+            "stateChanges": [
+                "isSearching",
+                "searchResults"
+            ],
+            "calls": [
+                "ProductService.search"
+            ]
+        },
+        "selectCategory": {
+            "parameters": [
+                {
+                    "name": "category",
+                    "type": "String?"
+                }
+            ],
+            "returns": "void",
+            "description": "카테고리 필터 선택",
+            "stateChanges": [
+                "selectedCategory"
+            ],
+            "triggers": [
+                "performSearch"
+            ]
+        }
+    }
+}

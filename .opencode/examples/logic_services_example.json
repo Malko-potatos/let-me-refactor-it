@@ -1,0 +1,27 @@
+{
+    "services": {
+        "ProductService": {
+            "search": {
+                "type": "API",
+                "method": "GET",
+                "endpoint": "/api/products/search",
+                "parameters": {
+                    "keyword": "String",
+                    "category": "String?"
+                },
+                "returns": "List<Product>",
+                "errorHandling": {
+                    "NetworkError": "Show error message",
+                    "EmptyResult": "Show empty state"
+                }
+            }
+        },
+        "ProductRepository": {
+            "getCachedResults": {
+                "type": "Local",
+                "returns": "List<Product>?",
+                "description": "로컬 캐시에서 이전 검색 결과 가져오기"
+            }
+        }
+    }
+}

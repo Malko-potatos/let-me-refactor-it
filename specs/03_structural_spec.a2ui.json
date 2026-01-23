@@ -1,0 +1,281 @@
+{"createSurface": {
+  "surfaceId": "main_app",
+  "catalogId": "https://a2ui.dev/specification/v0_9/standard_catalog.json"
+}}
+
+{"updateComponents": {
+  "surfaceId": "main_app",
+  "components": [
+    {
+      "id": "root",
+      "component": "Stack",
+      "children": ["login_screen", "main_screen"],
+      "align": "stretch"
+    },
+    {
+      "id": "login_screen",
+      "component": "Column",
+      "visible": "${!/userSession/isAuthenticated}",
+      "children": ["login_header", "login_form_container", "login_error_text"],
+      "align": "center"
+    },
+    {
+      "id": "login_header",
+      "component": "Text",
+      "text": "Inventory Management Login",
+      "style": "headline"
+    },
+    {
+      "id": "login_form_container",
+      "component": "Column",
+      "children": ["login_user_input", "login_pass_input", "login_button"]
+    },
+    {
+      "id": "login_user_input",
+      "component": "TextField",
+      "label": "User ID",
+      "value": {"path": "/ui/login/userId"}
+    },
+    {
+      "id": "login_pass_input",
+      "component": "TextField",
+      "label": "Password",
+      "obscureText": true,
+      "value": {"path": "/ui/login/password"}
+    },
+    {
+      "id": "login_button",
+      "component": "Button",
+      "text": "Login",
+      "action": {
+        "event": {
+          "name": "auth.login",
+          "parameters": {
+            "userId": "${/ui/login/userId}",
+            "password": "${/ui/login/password}"
+          }
+        }
+      },
+      "disabled": "${/isLoading}"
+    },
+    {
+      "id": "login_error_text",
+      "component": "Text",
+      "text": "${/loginError}",
+      "visible": "${/loginError}",
+      "style": "error"
+    },
+    {
+      "id": "main_screen",
+      "component": "Column",
+      "visible": "${/userSession/isAuthenticated}",
+      "children": ["app_header", "action_bar", "search_bar", "content_area"]
+    },
+    {
+      "id": "app_header",
+      "component": "Row",
+      "children": ["header_title", "header_user_info"],
+      "align": "spaceBetween"
+    },
+    {
+      "id": "header_title",
+      "component": "Text",
+      "text": "Inventory System"
+    },
+    {
+      "id": "header_user_info",
+      "component": "Text",
+      "text": {"function": "formatString", "args": {"template": "User: ${/userSession/userId}"}}
+    },
+    {
+      "id": "action_bar",
+      "component": "Row",
+      "children": ["refresh_btn", "scan_btn", "camera_btn"]
+    },
+    {
+      "id": "refresh_btn",
+      "component": "Button",
+      "text": "Refresh List",
+      "action": {"event": {"name": "inventory.fetch"}},
+      "disabled": "${/isInventoryLoading}"
+    },
+    {
+      "id": "scan_btn",
+      "component": "Button",
+      "text": "Scan Barcode",
+      "action": {"event": {"name": "device.scanner.scan"}},
+      "disabled": "${/isScannerLoading}"
+    },
+    {
+      "id": "camera_btn",
+      "component": "Button",
+      "text": "Take Photo",
+      "action": {"event": {"name": "device.camera.capture"}},
+      "disabled": "${/isCameraLoading}"
+    },
+    {
+      "id": "search_bar",
+      "component": "TextField",
+      "label": "Search Inventory...",
+      "value": {"path": "/searchQuery"}
+    },
+    {
+      "id": "content_area",
+      "component": "Stack",
+      "children": ["inventory_list_view", "item_detail_view"]
+    },
+    {
+      "id": "inventory_list_view",
+      "component": "List",
+      "visible": "${!/selectedItemId}",
+      "iterator": {"path": "/inventoryList"},
+      "child": "item_card_template"
+    },
+    {
+      "id": "item_card_template",
+      "component": "Card",
+      "child": "item_card_content"
+    },
+    {
+      "id": "item_card_content",
+      "component": "Row",
+      "children": ["item_info_col", "item_actions_row"],
+      "align": "spaceBetween"
+    },
+    {
+      "id": "item_info_col",
+      "component": "Column",
+      "children": ["item_name_text", "item_sku_text"]
+    },
+    {
+      "id": "item_name_text",
+      "component": "Text",
+      "text": "${name}",
+      "style": "bold"
+    },
+    {
+      "id": "item_sku_text",
+      "component": "Text",
+      "text": {"function": "formatString", "args": {"template": "SKU: ${sku}"}}
+    },
+    {
+      "id": "item_actions_row",
+      "component": "Row",
+      "children": ["view_item_btn", "delete_item_btn"]
+    },
+    {
+      "id": "view_item_btn",
+      "component": "Button",
+      "text": "Details",
+      "action": {
+        "event": {
+          "name": "inventory.view_detail",
+          "parameters": {
+            "item_id": "${id}"
+          }
+        }
+      }
+    },
+    {
+      "id": "delete_item_btn",
+      "component": "Button",
+      "text": "Delete",
+      "action": {
+        "event": {
+          "name": "inventory.delete_item",
+          "parameters": {
+            "item_id": "${id}"
+          }
+        }
+      }
+    },
+    {
+      "id": "item_detail_view",
+      "component": "Column",
+      "visible": "${/selectedItemId}",
+      "children": ["detail_toolbar", "detail_form"]
+    },
+    {
+      "id": "detail_toolbar",
+      "component": "Row",
+      "children": ["back_btn", "detail_title"]
+    },
+    {
+      "id": "back_btn",
+      "component": "Button",
+      "text": "Back",
+      "action": {
+        "event": {
+          "name": "inventory.view_detail",
+          "parameters": {
+            "item_id": ""
+          }
+        }
+      }
+    },
+    {
+      "id": "detail_title",
+      "component": "Text",
+      "text": "Edit Item"
+    },
+    {
+      "id": "detail_form",
+      "component": "Column",
+      "children": ["edit_name_input", "save_changes_btn"]
+    },
+    {
+      "id": "edit_name_input",
+      "component": "TextField",
+      "label": "Item Name",
+      "value": {"path": "/selectedItem/name"}
+    },
+    {
+      "id": "save_changes_btn",
+      "component": "Button",
+      "text": "Save Changes",
+      "action": {
+        "event": {
+          "name": "inventory.update_item",
+          "parameters": {
+            "item_id": "${/selectedItemId}",
+            "new_name": "${/selectedItem/name}"
+          }
+        }
+      },
+      "disabled": "${/isUpdating}"
+    }
+  ]
+}}
+
+{"updateDataModel": {
+  "surfaceId": "main_app",
+  "path": "/",
+  "value": {
+    "userSession": {
+      "isAuthenticated": false,
+      "userId": ""
+    },
+    "isLoading": false,
+    "loginError": null,
+    "inventoryList": [],
+    "isInventoryLoading": false,
+    "inventoryError": null,
+    "searchQuery": "",
+    "selectedItemId": null,
+    "selectedItem": {
+      "name": ""
+    },
+    "isUpdating": false,
+    "isDeleting": false,
+    "capturedImages": [],
+    "isCameraLoading": false,
+    "lastScanResult": null,
+    "isScannerLoading": false,
+    "ui": {
+      "login": {
+        "userId": "",
+        "password": ""
+      }
+    }
+  }
+}}

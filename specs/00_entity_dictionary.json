@@ -1,0 +1,131 @@
+{
+  "entities": {
+    "InventoryItem": {
+      "description": "Represents a physical stock item in the inventory.",
+      "fields": {
+        "id": {
+          "type": "string",
+          "required": true,
+          "description": "Unique identifier for the item. Legacy ID was number, migration to UUID recommended."
+        },
+        "name": {
+          "type": "string",
+          "required": true,
+          "description": "The display name of the item. Mapped from legacy 'title'."
+        },
+        "description": {
+          "type": "string",
+          "required": false,
+          "description": "Detailed description of the item. Mapped from legacy 'body'."
+        },
+        "sku": {
+          "type": "string",
+          "required": true,
+          "description": "Stock Keeping Unit. Previously computed dynamically (STOCK-{index}), now persisted."
+        },
+        "stockQuantity": {
+          "type": "integer",
+          "required": true,
+          "default": 0,
+          "description": "Current quantity in stock. Previously random, now persisted."
+        },
+        "ownerId": {
+          "type": "string",
+          "required": true,
+          "description": "ID of the user who owns or created the item. Mapped from legacy 'userId'."
+        }
+      },
+      "legacyMapping": {
+        "source": "G_DATA elements (from JSONPlaceholder)",
+        "map": {
+          "id": "id",
+          "title": "name",
+          "body": "description",
+          "userId": "ownerId"
+        },
+        "notes": "SKU and stockQuantity were transient in legacy. Needs database migration to persist these values."
+      }
+    },
+    "UserSession": {
+      "description": "Represents the current authenticated user's session.",
+      "fields": {
+        "userId": {
+          "type": "string",
+          "required": true,
+          "description": "The unique ID of the logged-in user."
+        },
+        "isAuthenticated": {
+          "type": "boolean",
+          "required": true,
+          "default": false,
+          "description": "Flag indicating if the session is active."
+        },
+        "loginTime": {
+          "type": "datetime",
+          "required": false,
+          "description": "Timestamp of when the user logged in."
+        }
+      },
+      "legacyMapping": {
+        "source": "localStorage",
+        "map": {
+          "user_id": "userId",
+          "isLoggedIn": "isAuthenticated"
+        }
+      }
+    },
+    "ScanResult": {
+      "description": "Data captured from a barcode scan.",
+      "fields": {
+        "code": {
+          "type": "string",
+          "required": true,
+          "description": "The raw string value scanned from the barcode."
+        },
+        "format": {
+          "type": "string",
+          "required": false,
+          "description": "The format of the barcode (e.g., QR_CODE, EAN_13)."
+        },
+        "timestamp": {
+          "type": "datetime",
+          "required": true,
+          "description": "Time when the scan occurred."
+        }
+      },
+      "legacyMapping": {
+        "source": "window.G_LAST_SCAN",
+        "map": {
+          "G_LAST_SCAN": "code"
+        }
+      }
+    },
+    "ImageCapture": {
+      "description": "Image data captured from the device camera.",
+      "fields": {
+        "imageData": {
+          "type": "string",
+          "required": true,
+          "description": "Base64 encoded image string."
+        },
+        "mimeType": {
+          "type": "string",
+          "required": true,
+          "default": "image/png",
+          "description": "MIME type of the image."
+        },
+        "timestamp": {
+          "type": "datetime",
+          "required": true,
+          "description": "Time when the photo was taken."
+        }
+      },
+      "legacyMapping": {
+        "source": "window.G_IMG_CACHE",
+        "map": {
+          "G_IMG_CACHE": "imageData"
+        }
+      }
+    }
+  }
+}

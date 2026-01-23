@@ -1,0 +1,91 @@
+{
+    "$schema": "logic_schema_v1",
+    "intent": "SearchProducts",
+    "stateManagement": {
+        "pattern": "Provider",
+        "states": {
+            "searchKeyword": {
+                "type": "String",
+                "scope": "local",
+                "description": "현재 검색 입력 값"
+            },
+            "selectedCategory": {
+                "type": "String?",
+                "scope": "local",
+                "description": "선택된 카테고리 필터"
+            },
+            "searchResults": {
+                "type": "List<Product>",
+                "scope": "local",
+                "description": "검색 결과 목록"
+            },
+            "isSearching": {
+                "type": "bool",
+                "scope": "local",
+                "description": "검색 진행 상태"
+            }
+        },
+        "actions": {
+            "updateSearchKeyword": {
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "type": "String"
+                    }
+                ],
+                "returns": "void",
+                "description": "검색어 상태 업데이트",
+                "stateChanges": [
+                    "searchKeyword"
+                ]
+            },
+            "performSearch": {
+                "parameters": [],
+                "returns": "Future<void>",
+                "async": true,
+                "description": "검색 API 호출 및 결과 업데이트",
+                "stateChanges": [
+                    "isSearching",
+                    "searchResults"
+                ],
+                "calls": [
+                    "ProductService.search"
+                ]
+            }
+        },
+        "services": {
+            "ProductService": {
+                "search": {
+                    "type": "API",
+                    "method": "GET",
+                    "endpoint": "/api/products/search",
+                    "parameters": {
+                        "keyword": "String",
+                        "category": "String?"
+                    },
+                    "returns": "List<Product>",
+                    "errorHandling": {
+                        "NetworkError": "Show error message",
+                        "EmptyResult": "Show empty state"
+                    }
+                }
+            }
+        }
+    },
+    "dataFlow": {
+        "userInput": [
+            "searchKeyword",
+            "selectedCategory"
+        ],
+        "computedValues": [
+            "filteredProducts"
+        ],
+        "asyncOperations": [
+            "performSearch",
+            "loadMoreResults"
+        ]
+    },
+    "entityReferences": {
+        "Product": "specs/00_entity_dictionary.json#/Product"
+    }
+}

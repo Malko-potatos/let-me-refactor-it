@@ -1,433 +1,285 @@
 {
-  "metadata": {
-    "extracted_from": "legacy_src/www/js/app.js, cordova_mocks.js",
-    "extraction_date": "2026-01-23",
-    "version": "1.0",
-    "description": "Comprehensive business logic extraction from OldStock-2017 monolithic application"
-  },
-  "screens": [
+  "intents": [
     {
-      "name": "Login",
-      "route": "login.html",
-      "purpose": "User authentication entry point",
-      "auth_required": false
-    },
-    {
-      "name": "InventoryList",
-      "route": "index.html",
-      "purpose": "Main inventory management interface",
-      "auth_required": true
-    }
-  ],
-  "features": [
-    {
-      "feature": "AppInitialization",
-      "user_goal": "앱 실행 시 사용자 인증 상태 확인 및 초기 데이터 로드",
-      "triggers": ["onLoad", "page_load"],
-      "data_flow": {
-        "input": ["localStorage.isLoggedIn"],
-        "process": [
-          "check_login_status",
-          "redirect_if_unauthorized",
-          "fetch_inventory_on_success"
-        ],
-        "output": ["inventory_data", "authenticated_session"]
-      },
-      "constraints": "로그인 상태가 아닐 경우 login.html로 리다이렉트"
-    },
-    {
-      "feature": "FetchInventory",
-      "user_goal": "서버로부터 재고 목록 수신 및 화면 표시",
-      "triggers": ["onLoad", "manual_refresh"],
-      "data_flow": {
-        "input": [],
-        "process": [
-          "ajax_get_request",
-          "simulate_data_heavy_load",
-          "render_list"
-        ],
-        "output": ["G_DATA", "rendered_html"]
-      },
-      "api_endpoint": {
-        "url": "https://jsonplaceholder.typicode.com/posts",
-        "method": "GET",
-        "purpose": "Fetch inventory items (mock endpoint)",
-        "response_format": "JSON array"
-      },
-      "constraints": "통신 중 로딩 오버레이 표시, 성공 시 인위적인 1초 지연 후 데이터 복제(성능 테스트용)"
-    },
-    {
-      "feature": "InventorySearch",
-      "user_goal": "검색어를 통한 재고 목록 필터링",
-      "triggers": ["search_input_change"],
-      "data_flow": {
-        "input": ["search_input_value"],
-        "process": [
-          "dom_filtering_by_text",
-          "toggle_visibility"
-        ],
-        "output": ["visible_list_items"]
-      },
-      "constraints": "대소문자 구분 없이 텍스트 포함 여부로 필터링, DOM 직접 조작 방식"
-    },
-    {
-      "feature": "InventoryDetail",
-      "user_goal": "선택한 재고 아이템의 상세 정보 확인",
-      "triggers": ["item_click"],
-      "data_flow": {
-        "input": ["item_id"],
-        "process": [
-          "find_item_by_id_in_G_DATA",
-          "display_alert_details"
-        ],
-        "output": ["alert_dialog"]
-      },
-      "constraints": "이벤트 버블링 제어 필요, 팝업 형태로 표시"
-    },
-    {
-      "feature": "EditInventoryItem",
-      "user_goal": "재고 아이템의 제목 수정",
-      "triggers": ["edit_button_click"],
-      "data_flow": {
-        "input": ["item_id", "new_title_from_prompt"],
-        "process": [
-          "prompt_user_input",
-          "validate_not_empty",
-          "simulate_api_update",
-          "update_global_state",
-          "re_render_list"
-        ],
-        "output": ["updated_G_DATA", "refreshed_ui"]
-      },
-      "constraints": "수정 후 전체 목록 재렌더링, 0.5초 시뮬레이션 지연, 빈 값 입력 시 업데이트 스킵"
-    },
-    {
-      "feature": "DeleteInventoryItem",
-      "user_goal": "재고 아이템 삭제",
-      "triggers": ["delete_button_click"],
-      "data_flow": {
-        "input": ["item_id"],
-        "process": [
-          "confirm_user_action",
-          "simulate_api_delete",
-          "filter_global_state_array",
-          "re_render_list"
-        ],
-        "output": ["updated_G_DATA", "refreshed_ui"]
-      },
-      "constraints": "삭제 전 확인 팝업 노출, 삭제 후 전체 목록 재렌더링, 0.5초 시뮬레이션 지연"
-    },
-    {
-      "feature": "CapturePhoto",
-      "user_goal": "카메라를 사용하여 사진 촬영 및 저장",
-      "triggers": ["photo_button_click"],
-      "data_flow": {
-        "input": ["navigator.camera"],
-        "process": [
-          "get_picture_data_url",
-          "store_in_img_cache",
-          "prepend_image_to_ui"
-        ],
-        "output": ["G_IMG_CACHE", "displayed_image"]
-      },
-      "cordova_plugin": {
-        "plugin": "cordova-plugin-camera",
-        "api": "navigator.camera.getPicture",
-        "version": "v2.x (legacy)",
-        "config": {
-          "quality": 50,
-          "destinationType": "Camera.DestinationType.DATA_URL"
-        }
-      },
-      "constraints": "Base64 데이터로 전역 변수 저장, 품질 설정 50, 이미지 UI 상단 추가"
-    },
-    {
-      "feature": "ScanBarcode",
-      "user_goal": "바코드를 스캔하여 아이템 ID 획득",
-      "triggers": ["barcode_button_click"],
-      "data_flow": {
-        "input": ["cordova.plugins.barcodeScanner"],
-        "process": [
-          "execute_scan",
-          "check_not_cancelled",
-          "update_last_scan_state",
-          "prepend_result_to_ui"
-        ],
-        "output": ["G_LAST_SCAN", "displayed_scan_result"]
-      },
-      "cordova_plugin": {
-        "plugin": "phonegap-plugin-barcodescanner",
-        "api": "cordova.plugins.barcodeScanner.scan",
-        "version": "v2.x (legacy)",
-        "mock_format": {
-          "text": "880123456789",
-          "format": "EAN_13",
-          "cancelled": false
-        }
-      },
-      "constraints": "스캔 취소 시 동작 안 함, 성공 시 스캔 결과 UI 상단 추가"
-    }
-  ],
-  "data_models": {
-    "inventory_item": {
-      "source": "API response / G_DATA",
-      "properties": [
+      "intent": "LOGIN",
+      "action": "auth.login",
+      "summary": "Authenticate user with ID and Password",
+      "parameters": [
         {
-          "name": "id",
-          "type": "number",
-          "description": "Unique identifier for the item"
+          "entity": "userId",
+          "type": "string",
+          "required": true,
+          "source": "UI.Input"
         },
         {
-          "name": "title",
+          "entity": "password",
           "type": "string",
-          "description": "Item name/title, displayed in list (truncated to 20 chars)"
+          "required": true,
+          "source": "UI.Input"
         }
       ],
-      "derived_properties": [
+      "context": {
+        "lifespan": 1,
+        "pre_conditions": [],
+        "output_contexts": [
+          "user_authenticated"
+        ]
+      },
+      "business_logic": {
+        "rules": [
+          "Validate that ID and Password are not empty.",
+          "Simulate server authentication delay (1500ms).",
+          "On Success: Set 'isLoggedIn' to true and store 'user_id' in local storage.",
+          "Redirect user to the main dashboard (index.html)."
+        ],
+        "data_flow": "UI Input -> Validation -> Mock Auth Service -> LocalStorage Update -> Navigation"
+      },
+      "legacy_references": {
+        "sources": [
+          "legacy_src/www/login.html"
+        ],
+        "logic_snippets": "doLogin() -> localStorage.setItem() -> location.href"
+      }
+    },
+    {
+      "intent": "FETCH_INVENTORY",
+      "action": "inventory.fetch",
+      "summary": "Retrieve inventory data from external source and initialize the list",
+      "parameters": [],
+      "context": {
+        "lifespan": 5,
+        "pre_conditions": [
+          "user.is_authenticated == true"
+        ],
+        "output_contexts": [
+          "inventory_loaded"
+        ]
+      },
+      "business_logic": {
+        "rules": [
+          "Display loading overlay.",
+          "Fetch data from external API (https://jsonplaceholder.typicode.com/posts).",
+          "Map API response to global inventory state (G_DATA).",
+          "Duplicate data 6 times to simulate heavy load for performance testing.",
+          "Render the inventory list to the DOM."
+        ],
+        "data_flow": "UI -> AJAX GET Request -> G_DATA Update -> Data Duplication -> renderList()"
+      },
+      "legacy_references": {
+        "sources": [
+          "legacy_src/www/js/app.js"
+        ],
+        "logic_snippets": "fetchInventory() -> $.ajax() -> renderList()"
+      }
+    },
+    {
+      "intent": "SEARCH_ITEMS",
+      "action": "inventory.search",
+      "summary": "Filter the displayed inventory list based on a search query",
+      "parameters": [
         {
-          "name": "sku",
+          "entity": "query",
           "type": "string",
-          "description": "Generated as STOCK-{1000 + index}, for display only",
-          "calculation": "STOCK-1000, STOCK-1001, ..."
-        },
-        {
-          "name": "quantity",
-          "type": "number",
-          "description": "Random quantity 0-99, for display only",
-          "calculation": "Math.floor(Math.random() * 100)"
+          "required": true,
+          "source": "UI.Input"
         }
-      ]
+      ],
+      "context": {
+        "lifespan": 5,
+        "pre_conditions": [
+          "inventory_loaded == true"
+        ],
+        "output_contexts": []
+      },
+      "business_logic": {
+        "rules": [
+          "Retrieve search query from input field.",
+          "Iterate through all rendered list items.",
+          "Hide items that do not contain the query text (case-insensitive).",
+          "Show items that match the query."
+        ],
+        "data_flow": "UI Input -> DOM Traversal -> Conditional Visibility Toggle"
+      },
+      "legacy_references": {
+        "sources": [
+          "legacy_src/www/js/app.js"
+        ],
+        "logic_snippets": "searchItems() -> $.each() -> .toggle()"
+      }
     },
-    "barcode_result": {
-      "source": "cordova.plugins.barcodeScanner.scan",
-      "properties": [
+    {
+      "intent": "VIEW_ITEM_DETAIL",
+      "action": "inventory.view_detail",
+      "summary": "Display details of a specific inventory item",
+      "parameters": [
         {
-          "name": "text",
+          "entity": "item_id",
           "type": "string",
-          "description": "Scanned barcode value"
-        },
-        {
-          "name": "format",
-          "type": "string",
-          "description": "Barcode format (e.g., EAN_13)"
-        },
-        {
-          "name": "cancelled",
-          "type": "boolean",
-          "description": "Whether user cancelled the scan"
+          "required": true,
+          "source": "UI.Event"
         }
-      ]
+      ],
+      "context": {
+        "lifespan": 5,
+        "pre_conditions": [
+          "inventory_loaded == true"
+        ],
+        "output_contexts": []
+      },
+      "business_logic": {
+        "rules": [
+          "Identify item by ID from the global state (G_DATA).",
+          "Display item ID and Title in an alert dialog."
+        ],
+        "data_flow": "UI Click -> findItemById() -> Alert Display"
+      },
+      "legacy_references": {
+        "sources": [
+          "legacy_src/www/js/app.js"
+        ],
+        "logic_snippets": "itemDetail() -> findItemById() -> alert()"
+      }
     },
-    "camera_result": {
-      "source": "navigator.camera.getPicture",
-      "properties": [
+    {
+      "intent": "EDIT_ITEM",
+      "action": "inventory.update_item",
+      "summary": "Update the title of an existing inventory item",
+      "parameters": [
         {
-          "name": "imageData",
+          "entity": "item_id",
           "type": "string",
-          "description": "Base64 encoded image data"
-        }
-      ]
-    }
-  },
-  "state_management": {
-    "pattern": "Global Variables (Anti-pattern)",
-    "variables": [
-      {
-        "name": "G_DATA",
-        "type": "Array",
-        "purpose": "Stores fetched inventory items in memory",
-        "scope": "Global",
-        "persistence": "No (lost on refresh)",
-        "initial_value": "[]"
-      },
-      {
-        "name": "G_USER_TOKEN",
-        "type": "String",
-        "purpose": "Stores user authentication token",
-        "scope": "Global",
-        "persistence": "No (lost on refresh)",
-        "initial_value": "\"\"",
-        "usage": "Currently unused but declared"
-      },
-      {
-        "name": "G_LAST_SCAN",
-        "type": "String",
-        "purpose": "Stores most recent barcode scan result",
-        "scope": "Global",
-        "persistence": "No (lost on refresh)",
-        "initial_value": "\"\""
-      },
-      {
-        "name": "G_IMG_CACHE",
-        "type": "String",
-        "purpose": "Stores captured photo as Base64 string",
-        "scope": "Global",
-        "persistence": "No (lost on refresh)",
-        "initial_value": "\"\"",
-        "note": "Memory leak risk - stores large base64 strings"
-      }
-    ],
-    "localStorage_usage": [
-      {
-        "key": "isLoggedIn",
-        "type": "String",
-        "purpose": "Authentication state persistence",
-        "valid_values": ["true", "false"],
-        "default": "false"
-      }
-    ]
-  },
-  "api_endpoints": [
-    {
-      "name": "FetchInventory",
-      "url": "https://jsonplaceholder.typicode.com/posts",
-      "method": "GET",
-      "purpose": "Retrieve inventory items (mock data)",
-      "response_type": "Array[Object]",
-      "error_handling": "Alert popup on failure",
-      "loading_state": "Shows #loading-overlay during request"
-    }
-  ],
-  "business_rules": [
-    {
-      "rule": "Authentication Required",
-      "description": "User must be logged in to access inventory list",
-      "implementation": "Checks localStorage.isLoggedIn === 'true' on page load"
-    },
-    {
-      "rule": "Edit Validation",
-      "description": "Item title cannot be empty when editing",
-      "implementation": "Check 'newTitle !== null && newTitle !== \"\"' before update"
-    },
-    {
-      "rule": "Delete Confirmation",
-      "description": "User must confirm before deleting an item",
-      "implementation": "Uses confirm() dialog before deletion"
-    },
-    {
-      "rule": "Event Propagation Control",
-      "description": "Button clicks must not trigger parent item click",
-      "implementation": "Uses event.stopPropagation() in editItem and deleteItem"
-    },
-    {
-      "rule": "Search Case Insensitivity",
-      "description": "Search filtering ignores letter case",
-      "implementation": "Converts search term and item text to lowercase before comparison"
-    },
-    {
-      "rule": "Loading States",
-      "description": "Show loading overlay during async operations",
-      "implementation": "Displays #loading-overlay, hides on success/error"
-    }
-  ],
-  "validations": {
-    "input_validation": [
-      {
-        "field": "edit_item_title",
-        "rule": "Required",
-        "check": "newTitle !== null && newTitle !== \"\"",
-        "error_message": "No explicit error, update skipped silently"
-      }
-    ],
-    "api_response_handling": {
-      "success": "Store in G_DATA, trigger render",
-      "error": "Show alert '통신 실패', hide loading overlay"
-    }
-  },
-  "mock_implementations": {
-    "cordova_mocks": [
-      {
-        "plugin": "cordova.plugins.barcodeScanner",
-        "mock_function": "scan",
-        "simulated_result": {
-          "text": "880123456789",
-          "format": "EAN_13",
-          "cancelled": false
+          "required": true,
+          "source": "UI.Event"
         },
-        "delay_ms": 1000
+        {
+          "entity": "new_name",
+          "type": "string",
+          "required": true,
+          "source": "UI.Prompt"
+        }
+      ],
+      "context": {
+        "lifespan": 5,
+        "pre_conditions": [
+          "inventory_loaded == true"
+        ],
+        "output_contexts": []
       },
-      {
-        "plugin": "navigator.camera",
-        "mock_function": "getPicture",
-        "simulated_result": "Base64 image placeholder string",
-        "delay_ms": 1500,
-        "config": "quality: 50, destinationType: DATA_URL"
+      "business_logic": {
+        "rules": [
+          "Locate item in global state (G_DATA) using ID.",
+          "Prompt user to enter a new title.",
+          "Validate that the new title is not empty.",
+          "Simulate API delay (500ms) with loading overlay.",
+          "Update the item's title in the global state.",
+          "Re-render the entire inventory list to reflect changes."
+        ],
+        "data_flow": "UI Click -> Prompt -> State Update -> DOM Re-render"
+      },
+      "legacy_references": {
+        "sources": [
+          "legacy_src/www/js/app.js"
+        ],
+        "logic_snippets": "editItem() -> prompt() -> renderList()"
       }
-    ]
-  },
-  "performance_issues_identified": [
-    "Global variable pollution",
-    "Memory leak: Storing large base64 images in G_IMG_CACHE",
-    "DOM manipulation: innerHTML concatenation in loop for rendering",
-    "Search: jQuery :contains() filtering on DOM instead of data",
-    "Re-render entire list on single item edit/delete",
-    "No data persistence - all changes lost on refresh",
-    "Callback hell in nested AJAX operations",
-    "Inefficient search - operates on DOM nodes, not data array"
-  ],
-  "user_actions": {
-    "login_screen": [
-      {
-        "action": "Login",
-        "method": "Sets localStorage.isLoggedIn = 'true' (assumed)",
-        "next_screen": "index.html"
-      }
-    ],
-    "inventory_list_screen": [
-      {
-        "action": "View Item Details",
-        "trigger": "Click on list item",
-        "output": "Alert popup with ID and title"
-      },
-      {
-        "action": "Edit Item",
-        "trigger": "Click EDIT button",
-        "input_method": "Browser prompt() dialog",
-        "updates": ["Item title in G_DATA", "Full list re-render"]
-      },
-      {
-        "action": "Delete Item",
-        "trigger": "Click DEL button",
-        "confirmation": "Confirm dialog required",
-        "updates": ["Remove item from G_DATA", "Full list re-render"]
-      },
-      {
-        "action": "Search Items",
-        "trigger": "Type in search input",
-        "behavior": "Real-time DOM filtering (case-insensitive)"
-      },
-      {
-        "action": "Take Photo",
-        "trigger": "Photo button click",
-        "integration": "Cordova Camera plugin",
-        "output": "Image displayed at top of list, stored in G_IMG_CACHE"
-      },
-      {
-        "action": "Scan Barcode",
-        "trigger": "Barcode button click",
-        "integration": "Cordova Barcode Scanner plugin",
-        "output": "Scan result displayed at top of list, stored in G_LAST_SCAN"
-      }
-    ]
-  },
-  "third_party_dependencies": [
-    {
-      "name": "jQuery",
-      "version": "Not specified",
-      "usage": "DOM manipulation, AJAX, event handling",
-      "file": "jquery.js"
     },
     {
-      "name": "cordova-plugin-camera",
-      "version": "v2.x (legacy)",
-      "usage": "Photo capture functionality",
-      "mock_file": "cordova_mocks.js"
+      "intent": "DELETE_ITEM",
+      "action": "inventory.delete_item",
+      "summary": "Remove an item from the inventory",
+      "parameters": [
+        {
+          "entity": "item_id",
+          "type": "string",
+          "required": true,
+          "source": "UI.Event"
+        }
+      ],
+      "context": {
+        "lifespan": 5,
+        "pre_conditions": [
+          "inventory_loaded == true"
+        ],
+        "output_contexts": []
+      },
+      "business_logic": {
+        "rules": [
+          "Request user confirmation via dialog.",
+          "Simulate API delay (500ms) with loading overlay.",
+          "Filter the global state (G_DATA) to exclude the target item.",
+          "Update global state with the filtered list.",
+          "Re-render the entire inventory list."
+        ],
+        "data_flow": "UI Click -> Confirmation -> State Filtering -> DOM Re-render"
+      },
+      "legacy_references": {
+        "sources": [
+          "legacy_src/www/js/app.js"
+        ],
+        "logic_snippets": "deleteItem() -> confirm() -> renderList()"
+      }
     },
     {
-      "name": "phonegap-plugin-barcodescanner",
-      "version": "v2.x (legacy)",
-      "usage": "Barcode scanning functionality",
-      "mock_file": "cordova_mocks.js"
+      "intent": "TAKE_PHOTO",
+      "action": "device.camera.capture",
+      "summary": "Capture a photo and display it in the list",
+      "parameters": [],
+      "context": {
+        "lifespan": 5,
+        "pre_conditions": [
+          "device.has_camera == true"
+        ],
+        "output_contexts": [
+          "photo_captured"
+        ]
+      },
+      "business_logic": {
+        "rules": [
+          "Show loading overlay.",
+          "Invoke the device camera to capture an image.",
+          "On Success: Store Base64 image data in global cache (G_IMG_CACHE).",
+          "Prepend the captured image to the top of the inventory list view.",
+          "Display success alert."
+        ],
+        "data_flow": "UI Click -> Camera API -> G_IMG_CACHE -> DOM Manipulation"
+      },
+      "legacy_references": {
+        "sources": [
+          "legacy_src/www/js/app.js"
+        ],
+        "logic_snippets": "takePhoto() -> navigator.camera.getPicture()"
+      }
+    },
+    {
+      "intent": "SCAN_BARCODE",
+      "action": "device.scanner.scan",
+      "summary": "Scan a barcode and display the result",
+      "parameters": [],
+      "context": {
+        "lifespan": 5,
+        "pre_conditions": [
+          "device.has_scanner == true"
+        ],
+        "output_contexts": [
+          "barcode_scanned"
+        ]
+      },
+      "business_logic": {
+        "rules": [
+          "Invoke the barcode scanner plugin.",
+          "On Success: Capture scanned text and format.",
+          "Store scanned text in global state (G_LAST_SCAN).",
+          "Prepend the scan result to the top of the inventory list view.",
+          "Display alert with scan details."
+        ],
+        "data_flow": "UI Click -> Scanner API -> G_LAST_SCAN -> DOM Manipulation"
+      },
+      "legacy_references": {
+        "sources": [
+          "legacy_src/www/js/app.js"
+        ],
+        "logic_snippets": "scanBarcode() -> cordova.plugins.barcodeScanner.scan()"
+      }
     }
   ]
 }

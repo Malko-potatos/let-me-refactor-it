@@ -1,10 +1,47 @@
 {
-  "feature": "UserLogin",
-  "user_goal": "서비스 접속을 위한 신원 인증",
-  "data_flow": {
-    "input": ["email", "password"],
-    "process": ["validate_email_format", "encrypt_password"],
-    "output": ["auth_token", "user_profile_object"]
-  },
-  "constraints": "비밀번호 3회 오류 시 잠금 처리 로직 필수"
+  "intents": [
+    {
+      "intent": "SUBMIT_ORDER",
+      "action": "order.create",
+      "summary": "장바구니의 상품을 실제 주문으로 변환하고 결제 프로세스를 시작함",
+      "parameters": [
+        {
+          "entity": "cart_items",
+          "type": "List<Item>",
+          "required": true,
+          "source": "LocalState.Cart"
+        },
+        {
+          "entity": "payment_method",
+          "type": "Enum(CARD, TRANSFER)",
+          "required": true,
+          "source": "UI.Input"
+        }
+      ],
+      "context": {
+        "lifespan": 5,
+        "pre_conditions": [
+          "user.is_authenticated == true",
+          "cart.is_empty == false"
+        ],
+        "output_contexts": [
+          "order_pending_verification"
+        ]
+      },
+      "business_logic": {
+        "rules": [
+          "총 결제 금액이 0원 이하일 경우 예외 처리",
+          "재고 부족 시 'OUT_OF_STOCK' 에러 반환 및 프로세스 중단"
+        ],
+        "data_flow": "UI -> Validation -> Payment Gateway API -> Database Update"
+      },
+      "legacy_references": {
+        "sources": [
+          "legacy_src/modules/order_controller",
+          "legacy_src/ui/checkout_view"
+        ],
+        "logic_snippets": "checkInventory() -> processPayment() -> saveOrder()"
+      }
+    }
+  ]
 }

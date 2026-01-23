@@ -1,0 +1,408 @@
+[
+  {
+    "intent": "LOGIN",
+    "stateManagement": {
+      "pattern": "Provider",
+      "providerName": "AuthProvider",
+      "scope": "Global",
+      "states": [
+        {
+          "name": "userSession",
+          "type": "UserSession",
+          "scope": "Global",
+          "isPersistent": true,
+          "description": "Stores the authenticated user's session data."
+        },
+        {
+          "name": "isLoading",
+          "type": "bool",
+          "scope": "Local",
+          "initialValue": "false",
+          "description": "Indicates if the login process is in progress."
+        },
+        {
+          "name": "loginError",
+          "type": "String?",
+          "scope": "Local",
+          "description": "Stores error messages related to login failure."
+        }
+      ],
+      "actions": [
+        {
+          "name": "auth.login",
+          "parameters": [
+            { "name": "userId", "type": "String" },
+            { "name": "password", "type": "String" }
+          ],
+          "returns": "Future<void>",
+          "isAsync": true,
+          "description": "Authenticates the user and initializes the session.",
+          "stateChanges": ["isLoading", "userSession", "loginError"],
+          "calls": ["AuthService.authenticate", "StorageService.saveSession"]
+        }
+      ],
+      "services": [
+        {
+          "name": "AuthService",
+          "methods": [
+            {
+              "signature": "authenticate(String userId, String password)",
+              "returns": "Future<UserSession>",
+              "description": "Validates credentials against the backend."
+            }
+          ]
+        },
+        {
+          "name": "StorageService",
+          "methods": [
+            {
+              "signature": "saveSession(UserSession session)",
+              "returns": "Future<void>",
+              "description": "Persists the user session locally."
+            }
+          ]
+        }
+      ]
+    },
+    "dataFlow": {
+      "userInput": ["userId", "password"],
+      "computedValues": [],
+      "asyncOperations": ["Authenticate User", "Save Session"]
+    },
+    "entityReferences": ["UserSession"]
+  },
+  {
+    "intent": "FETCH_INVENTORY",
+    "stateManagement": {
+      "pattern": "Provider",
+      "providerName": "InventoryProvider",
+      "scope": "Global",
+      "states": [
+        {
+          "name": "inventoryList",
+          "type": "List<InventoryItem>",
+          "scope": "Global",
+          "initialValue": "[]",
+          "description": "The master list of inventory items."
+        },
+        {
+          "name": "isInventoryLoading",
+          "type": "bool",
+          "scope": "Global",
+          "initialValue": "false",
+          "description": "Indicates if inventory data is being fetched."
+        },
+        {
+          "name": "inventoryError",
+          "type": "String?",
+          "scope": "Global",
+          "description": "Stores error messages related to inventory operations."
+        }
+      ],
+      "actions": [
+        {
+          "name": "inventory.fetch",
+          "parameters": [],
+          "returns": "Future<void>",
+          "isAsync": true,
+          "description": "Retrieves inventory items from the remote source.",
+          "stateChanges": ["isInventoryLoading", "inventoryList", "inventoryError"],
+          "calls": ["InventoryRepository.fetchAll"]
+        }
+      ],
+      "services": [
+        {
+          "name": "InventoryRepository",
+          "methods": [
+            {
+              "signature": "fetchAll()",
+              "returns": "Future<List<InventoryItem>>",
+              "description": "Fetches all inventory items from the API."
+            }
+          ]
+        }
+      ]
+    },
+    "dataFlow": {
+      "userInput": [],
+      "computedValues": [],
+      "asyncOperations": ["Fetch Inventory Data"]
+    },
+    "entityReferences": ["InventoryItem"]
+  },
+  {
+    "intent": "SEARCH_ITEMS",
+    "stateManagement": {
+      "pattern": "Provider",
+      "providerName": "InventoryProvider",
+      "scope": "Global",
+      "states": [
+        {
+          "name": "searchQuery",
+          "type": "String",
+          "scope": "Global",
+          "initialValue": "\"\"",
+          "description": "The current search text used to filter the list."
+        }
+      ],
+      "actions": [
+        {
+          "name": "inventory.search",
+          "parameters": [
+            { "name": "query", "type": "String" }
+          ],
+          "returns": "void",
+          "isAsync": false,
+          "description": "Updates the search query state to filter the list.",
+          "stateChanges": ["searchQuery"],
+          "calls": []
+        }
+      ],
+      "services": []
+    },
+    "dataFlow": {
+      "userInput": ["query"],
+      "computedValues": ["filteredInventoryList"],
+      "asyncOperations": []
+    },
+    "entityReferences": ["InventoryItem"]
+  },
+  {
+    "intent": "VIEW_ITEM_DETAIL",
+    "stateManagement": {
+      "pattern": "Provider",
+      "providerName": "InventoryProvider",
+      "scope": "Global",
+      "states": [
+        {
+          "name": "selectedItemId",
+          "type": "String?",
+          "scope": "Global",
+          "description": "The ID of the currently selected item."
+        }
+      ],
+      "actions": [
+        {
+          "name": "inventory.view_detail",
+          "parameters": [
+            { "name": "item_id", "type": "String" }
+          ],
+          "returns": "void",
+          "isAsync": false,
+          "description": "Sets the selected item ID for detail view.",
+          "stateChanges": ["selectedItemId"],
+          "calls": []
+        }
+      ],
+      "services": []
+    },
+    "dataFlow": {
+      "userInput": ["item_id"],
+      "computedValues": ["selectedItem"],
+      "asyncOperations": []
+    },
+    "entityReferences": ["InventoryItem"]
+  },
+  {
+    "intent": "EDIT_ITEM",
+    "stateManagement": {
+      "pattern": "Provider",
+      "providerName": "InventoryProvider",
+      "scope": "Global",
+      "states": [
+        {
+          "name": "isUpdating",
+          "type": "bool",
+          "scope": "Local",
+          "initialValue": "false",
+          "description": "Indicates if an item update is in progress."
+        }
+      ],
+      "actions": [
+        {
+          "name": "inventory.update_item",
+          "parameters": [
+            { "name": "item_id", "type": "String" },
+            { "name": "new_name", "type": "String" }
+          ],
+          "returns": "Future<void>",
+          "isAsync": true,
+          "description": "Updates the name of an inventory item.",
+          "stateChanges": ["inventoryList", "isUpdating", "inventoryError"],
+          "calls": ["InventoryRepository.updateItem"]
+        }
+      ],
+      "services": [
+        {
+          "name": "InventoryRepository",
+          "methods": [
+            {
+              "signature": "updateItem(String id, Map<String, dynamic> updates)",
+              "returns": "Future<InventoryItem>",
+              "description": "Updates specific fields of an inventory item."
+            }
+          ]
+        }
+      ]
+    },
+    "dataFlow": {
+      "userInput": ["item_id", "new_name"],
+      "computedValues": [],
+      "asyncOperations": ["Update Item"]
+    },
+    "entityReferences": ["InventoryItem"]
+  },
+  {
+    "intent": "DELETE_ITEM",
+    "stateManagement": {
+      "pattern": "Provider",
+      "providerName": "InventoryProvider",
+      "scope": "Global",
+      "states": [
+        {
+          "name": "isDeleting",
+          "type": "bool",
+          "scope": "Local",
+          "initialValue": "false",
+          "description": "Indicates if an item deletion is in progress."
+        }
+      ],
+      "actions": [
+        {
+          "name": "inventory.delete_item",
+          "parameters": [
+            { "name": "item_id", "type": "String" }
+          ],
+          "returns": "Future<void>",
+          "isAsync": true,
+          "description": "Removes an item from the inventory.",
+          "stateChanges": ["inventoryList", "isDeleting", "inventoryError"],
+          "calls": ["InventoryRepository.deleteItem"]
+        }
+      ],
+      "services": [
+        {
+          "name": "InventoryRepository",
+          "methods": [
+            {
+              "signature": "deleteItem(String id)",
+              "returns": "Future<void>",
+              "description": "Deletes an item from the remote source."
+            }
+          ]
+        }
+      ]
+    },
+    "dataFlow": {
+      "userInput": ["item_id"],
+      "computedValues": [],
+      "asyncOperations": ["Delete Item"]
+    },
+    "entityReferences": ["InventoryItem"]
+  },
+  {
+    "intent": "TAKE_PHOTO",
+    "stateManagement": {
+      "pattern": "Provider",
+      "providerName": "DeviceProvider",
+      "scope": "Global",
+      "states": [
+        {
+          "name": "capturedImages",
+          "type": "List<ImageCapture>",
+          "scope": "Global",
+          "initialValue": "[]",
+          "description": "List of images captured in the current session."
+        },
+        {
+          "name": "isCameraLoading",
+          "type": "bool",
+          "scope": "Local",
+          "initialValue": "false",
+          "description": "Indicates if the camera operation is active."
+        }
+      ],
+      "actions": [
+        {
+          "name": "device.camera.capture",
+          "parameters": [],
+          "returns": "Future<void>",
+          "isAsync": true,
+          "description": "Captures a photo using the device camera.",
+          "stateChanges": ["capturedImages", "isCameraLoading"],
+          "calls": ["DeviceService.captureImage"]
+        }
+      ],
+      "services": [
+        {
+          "name": "DeviceService",
+          "methods": [
+            {
+              "signature": "captureImage()",
+              "returns": "Future<ImageCapture>",
+              "description": "Invokes native camera API to take a picture."
+            }
+          ]
+        }
+      ]
+    },
+    "dataFlow": {
+      "userInput": [],
+      "computedValues": [],
+      "asyncOperations": ["Capture Image"]
+    },
+    "entityReferences": ["ImageCapture"]
+  },
+  {
+    "intent": "SCAN_BARCODE",
+    "stateManagement": {
+      "pattern": "Provider",
+      "providerName": "DeviceProvider",
+      "scope": "Global",
+      "states": [
+        {
+          "name": "lastScanResult",
+          "type": "ScanResult?",
+          "scope": "Global",
+          "description": "The result of the most recent barcode scan."
+        },
+        {
+          "name": "isScannerLoading",
+          "type": "bool",
+          "scope": "Local",
+          "initialValue": "false",
+          "description": "Indicates if the scanner is active."
+        }
+      ],
+      "actions": [
+        {
+          "name": "device.scanner.scan",
+          "parameters": [],
+          "returns": "Future<void>",
+          "isAsync": true,
+          "description": "Scans a barcode using the device hardware.",
+          "stateChanges": ["lastScanResult", "isScannerLoading"],
+          "calls": ["DeviceService.scanBarcode"]
+        }
+      ],
+      "services": [
+        {
+          "name": "DeviceService",
+          "methods": [
+            {
+              "signature": "scanBarcode()",
+              "returns": "Future<ScanResult>",
+              "description": "Invokes native scanner API."
+            }
+          ]
+        }
+      ]
+    },
+    "dataFlow": {
+      "userInput": [],
+      "computedValues": [],
+      "asyncOperations": ["Scan Barcode"]
+    },
+    "entityReferences": ["ScanResult"]
+  }
+]
