@@ -1,49 +1,45 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../domain/entities/user_session.dart';
 import '../../domain/repositories/auth_repository.dart';
+import '../datasources/local_storage_service.dart';
 
-/// Implementation of AuthRepository using SharedPreferences
 class AuthRepositoryImpl implements AuthRepository {
-  final SharedPreferences prefs;
+  final LocalStorageService _localStorageService;
+  static const String _userKey = 'user_id';
 
-  static const String _isLoggedInKey = 'isLoggedIn';
-  static const String _tokenKey = 'authToken';
-
-  AuthRepositoryImpl(this.prefs);
+  AuthRepositoryImpl(this._localStorageService);
 
   @override
-  Future<bool> login(String email, String password) async {
-    try {
-      // Simulate API call
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      // Simple validation - in a real app, this would authenticate with a server
-      if (email.isNotEmpty && password.isNotEmpty) {
-        // Generate a fake token
-        final token = 'token_${DateTime.now().millisecondsSinceEpoch}';
-        await prefs.setBool(_isLoggedInKey, true);
-        await prefs.setString(_tokenKey, token);
-        return true;
-      }
-
-      return false;
-    } catch (e) {
-      throw Exception('Login failed: $e');
+  Future<UserSession> login(String userId, String password) async {
+    // Mock check: any non-empty ID/password succeeds
+    if (userId.isEmpty || password.isEmpty) {
+      throw Exception('Invalid credentials');
     }
+
+    await _localStorageService.saveString(_userKey, userId);
+
+    return UserSession(
+      userId: userId,
+      isAuthenticated: true,
+      loginTime: DateTime.now(),
+    );
   }
 
   @override
   Future<void> logout() async {
-    await prefs.remove(_isLoggedInKey);
-    await prefs.remove(_tokenKey);
+    await _localStorageService.remove(_userKey);
   }
 
   @override
-  Future<bool> isAuthenticated() async {
-    return prefs.getBool(_isLoggedInKey) ?? false;
-  }
-
-  @override
-  Future<String?> getToken() async {
-    return prefs.getString(_tokenKey);
+  Future<UserSession?> getSession() async {
+    final userId = _localStorageService.getString(_userKey);
+    if (userId != null && userId.isNotEmpty) {
+      return UserSession(
+        userId: userId,
+        isAuthenticated: true,
+        loginTime:
+            DateTime.now(), // In a real app, this would be retrieved or refreshed
+      );
+    }
+    return null;
   }
 }

@@ -1,147 +1,133 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// App color palette
 class AppColors {
-  AppColors._();
-
-  static const Color primary = Color(0xFF0A4B78); // Deep ocean blue
-  static const Color secondary = Color(0xFFFF7A6C); // Warm coral
-  static const Color success = Color(0xFF98D8C8); // Soft mint green
-  static const Color warning = Color(0xFFFFC857); // Gentle amber
-  static const Color error = Color(0xFFE57373); // Muted rose
-  static const Color background = Color(0xFFFAFAFA); // Off-white
-  static const Color surface = Color(0xFFFFFFFF); // Pure white
-  static const Color card = Color(0x1A0A4B78); // Glassmorphic card
-  static const Color border = Color(0x330A4B78); // Glass border
+  static const Color primary = Color(0xFF2C3E50);
+  static const Color secondary = Color(0xFF95A5A6);
+  static const Color accent = Color(0xFF3498DB);
+  static const Color background = Color(0xFFF4F6F7);
+  static const Color surface = Color(0xFFFFFFFF);
+  static const Color textPrimary = Color(0xFF2C3E50);
+  static const Color textSecondary = Color(0xFF7F8C8D);
+  static const Color error = Color(0xFFE74C3C);
 }
 
-/// App typography
-class AppTypography {
-  AppTypography._();
+class AppSpacing {
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+}
 
-  static TextTheme get lightTextTheme => TextTheme(
-        displayLarge: GoogleFonts.playfairDisplay(
-          fontSize: 32,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.0,
-        ),
-        displayMedium: GoogleFonts.playfairDisplay(
+class AppRadius {
+  static const double sm = 4.0;
+  static const double md = 8.0;
+  static const double lg = 16.0;
+}
+
+class AppShadows {
+  static const List<BoxShadow> card = [
+    BoxShadow(
+      color: Color.fromRGBO(0, 0, 0, 0.05),
+      offset: Offset(0, 2),
+      blurRadius: 4,
+    ),
+  ];
+
+  static const List<BoxShadow> floating = [
+    BoxShadow(
+      color: Color.fromRGBO(0, 0, 0, 0.1),
+      offset: Offset(0, 4),
+      blurRadius: 12,
+    ),
+  ];
+}
+
+class AppTheme {
+  static ThemeData get light {
+    return ThemeData(
+      primaryColor: AppColors.primary,
+      scaffoldBackgroundColor: AppColors.background,
+      colorScheme: const ColorScheme.light(
+        primary: AppColors.primary,
+        secondary: AppColors.accent,
+        surface: AppColors.surface,
+        error: AppColors.error,
+        onPrimary: Colors.white,
+        onSecondary: Colors.white,
+        onSurface: AppColors.textPrimary,
+        onError: Colors.white,
+      ),
+      textTheme: TextTheme(
+        headlineMedium: GoogleFonts.inter(
           fontSize: 24,
           fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary,
         ),
-        titleLarge: GoogleFonts.montserrat(
+        titleMedium: GoogleFonts.inter(
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+          color: AppColors.textPrimary,
+        ),
+        bodyMedium: GoogleFonts.inter(
           fontSize: 16,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w400,
+          color: AppColors.textPrimary,
         ),
-        titleMedium: GoogleFonts.montserrat(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-        bodyLarge: GoogleFonts.openSans(
+        bodySmall: GoogleFonts.inter(
           fontSize: 14,
           fontWeight: FontWeight.w400,
-          height: 1.6,
+          color: AppColors.textSecondary,
         ),
-        bodyMedium: GoogleFonts.openSans(
-          fontSize: 14,
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: AppColors.surface,
+        elevation:
+            0, // Using manual shadows in UI components or custom elevation
+        iconTheme: const IconThemeData(color: AppColors.textPrimary),
+        titleTextStyle: GoogleFonts.inter(
+          fontSize: 18,
           fontWeight: FontWeight.w500,
-          height: 1.5,
+          color: AppColors.textPrimary,
         ),
-        labelLarge: GoogleFonts.montserrat(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.surface,
+        contentPadding: const EdgeInsets.all(AppSpacing.sm),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          borderSide: const BorderSide(color: AppColors.secondary),
         ),
-        bodySmall: GoogleFonts.jetBrainsMono(
-          fontSize: 12,
-          fontWeight: FontWeight.w400,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          borderSide: const BorderSide(color: AppColors.secondary),
         ),
-      );
-}
-
-/// App theme
-class AppTheme {
-  AppTheme._();
-
-  static ThemeData get lightTheme => ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.light,
-        primaryColor: AppColors.primary,
-        scaffoldBackgroundColor: AppColors.background,
-        colorScheme: const ColorScheme.light(
-          primary: AppColors.primary,
-          secondary: AppColors.secondary,
-          surface: AppColors.surface,
-          error: AppColors.error,
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          borderSide: const BorderSide(color: AppColors.accent),
         ),
-        textTheme: AppTypography.lightTextTheme,
-        appBarTheme: const AppBarTheme(
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          elevation: 0,
-          centerTitle: true,
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            foregroundColor: Colors.white,
-            elevation: 2,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          ),
-        ),
-        textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(
-            foregroundColor: AppColors.primary,
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          ),
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: AppColors.card,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.primary, width: 2),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.error),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.error, width: 2),
-          ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        ),
-        cardTheme: const CardThemeData(
-          elevation: 2,
+          foregroundColor: Colors.white,
+          elevation: 2, // Approximate card shadow
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12)),
+            borderRadius: BorderRadius.circular(AppRadius.md),
           ),
-          color: AppColors.card,
+          minimumSize: const Size.fromHeight(48),
         ),
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.android: ZoomPageTransitionsBuilder(),
-            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-          },
+      ),
+      cardTheme: const CardThemeData(
+        color: AppColors.surface,
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(AppRadius.md)),
         ),
-        snackBarTheme: SnackBarThemeData(
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          elevation: 8,
-        ),
-      );
+        margin: EdgeInsets.zero,
+      ),
+    );
+  }
 }

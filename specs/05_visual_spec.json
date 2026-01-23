@@ -1,0 +1,135 @@
+{
+  "visualSpec": {
+    "surfaceId": "main_app",
+    "theme": {
+      "colors": {
+        "primary": "#2C3E50",
+        "secondary": "#95A5A6",
+        "accent": "#3498DB",
+        "background": "#F4F6F7",
+        "surface": "#FFFFFF",
+        "textPrimary": "#2C3E50",
+        "textSecondary": "#7F8C8D",
+        "error": "#E74C3C"
+      },
+      "typography": {
+        "headline": {
+          "fontSize": "24px",
+          "fontWeight": "600",
+          "color": "#2C3E50"
+        },
+        "sectionTitle": {
+          "fontSize": "18px",
+          "fontWeight": "500",
+          "color": "#2C3E50"
+        },
+        "body": {
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "color": "#2C3E50"
+        },
+        "caption": {
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "color": "#7F8C8D"
+        }
+      },
+      "spacing": {
+        "xs": "4px",
+        "sm": "8px",
+        "md": "16px",
+        "lg": "24px",
+        "xl": "32px"
+      },
+      "borderRadius": {
+        "sm": "4px",
+        "md": "8px",
+        "lg": "16px"
+      },
+      "shadows": {
+        "card": "0 2px 4px rgba(0,0,0,0.05)",
+        "floating": "0 4px 12px rgba(0,0,0,0.1)"
+      }
+    },
+    "components": {
+      "root": {
+        "backgroundColor": "theme.colors.background"
+      },
+      "login_screen": {
+        "padding": "theme.spacing.xl",
+        "backgroundColor": "theme.colors.background",
+        "justifyContent": "center"
+      },
+      "login_header": {
+        "style": "theme.typography.headline",
+        "marginBottom": "theme.spacing.lg"
+      },
+      "login_form_container": {
+        "width": "100%",
+        "maxWidth": "400px",
+        "spacing": "theme.spacing.md"
+      },
+      "login_button": {
+        "backgroundColor": "theme.colors.primary",
+        "textColor": "#FFFFFF",
+        "borderRadius": "theme.borderRadius.md",
+        "height": "48px",
+        "elevation": "theme.shadows.card"
+      },
+      "login_error_text": {
+        "color": "theme.colors.error",
+        "marginTop": "theme.spacing.sm"
+      },
+      "app_header": {
+        "backgroundColor": "theme.colors.surface",
+        "padding": "theme.spacing.md",
+        "elevation": "theme.shadows.floating",
+        "borderBottom": "1px solid theme.colors.secondary"
+      },
+      "header_title": {
+        "style": "theme.typography.sectionTitle"
+      },
+      "action_bar": {
+        "padding": "theme.spacing.md",
+        "spacing": "theme.spacing.sm",
+        "backgroundColor": "theme.colors.background"
+      },
+      "search_bar": {
+        "backgroundColor": "theme.colors.surface",
+        "borderRadius": "theme.borderRadius.md",
+        "border": "1px solid theme.colors.secondary",
+        "padding": "theme.spacing.sm"
+      },
+      "item_card_template": {
+        "backgroundColor": "theme.colors.surface",
+        "borderRadius": "theme.borderRadius.md",
+        "padding": "theme.spacing.md",
+        "marginBottom": "theme.spacing.sm",
+        "elevation": "theme.shadows.card"
+      },
+      "item_name_text": {
+        "style": "theme.typography.body",
+        "fontWeight": "600"
+      },
+      "item_sku_text": {
+        "style": "theme.typography.caption"
+      },
+      "view_item_btn": {
+        "backgroundColor": "transparent",
+        "textColor": "theme.colors.accent",
+        "border": "1px solid theme.colors.accent",
+        "borderRadius": "theme.borderRadius.sm"
+      },
+      "delete_item_btn": {
+        "backgroundColor": "transparent",
+        "textColor": "theme.colors.error"
+      },
+      "detail_toolbar": {
+        "padding": "theme.spacing.md",
+        "borderBottom": "1px solid theme.colors.secondary",
+        "backgroundColor": "theme.colors.surface",
+        "alignItems": "center"
+      }
+    }
+  }
+}

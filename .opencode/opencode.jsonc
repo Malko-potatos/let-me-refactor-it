@@ -220,6 +220,14 @@
             "environment": {
                 "STITCH_PROJECT_ID": "gemini-code-428301"
             }
+        },
+        "dart-mcp": {
+            "type": "local",
+            "command": [
+                "dart",
+                "mcp-server"
+            ],
+            "enabled": true
         }
     }
 }

@@ -1,14 +1,7 @@
-/// Abstract repository for authentication operations
+import '../entities/user_session.dart';
+
 abstract class AuthRepository {
-  /// Logs in with email and password
-  Future<bool> login(String email, String password);
-
-  /// Logs out the current user
+  Future<UserSession> login(String userId, String password);
   Future<void> logout();
-
-  /// Checks if user is authenticated
-  Future<bool> isAuthenticated();
-
-  /// Gets the current authentication token
-  Future<String?> getToken();
+  Future<UserSession?> getSession();
 }

@@ -1,93 +1,101 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import '../../domain/entities/inventory_item.dart';
 import '../../domain/repositories/inventory_repository.dart';
 
-/// Implementation of InventoryRepository using HTTP
 class InventoryRepositoryImpl implements InventoryRepository {
-  final http.Client client;
-  final String baseUrl;
-
-  InventoryRepositoryImpl({
-    required this.client,
-    this.baseUrl = 'https://jsonplaceholder.typicode.com',
-  });
-
   @override
-  Future<List<InventoryItem>> fetchInventory() async {
-    try {
-      // Simulate data heavy load
-      await Future.delayed(const Duration(seconds: 1));
+  Future<List<InventoryItem>> fetchAll() async {
+    // Mock delay
+    await Future.delayed(const Duration(milliseconds: 500));
 
-      final response = await client.get(
-        Uri.parse('$baseUrl/posts'),
-      );
-
-      if (response.statusCode == 200) {
-        final List<dynamic> jsonData = json.decode(response.body);
-        return jsonData
-            .map((json) => InventoryItem.fromJson(json as Map<String, dynamic>))
-            .toList();
-      } else {
-        throw Exception('Failed to load inventory: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Network error: $e');
-    }
+    return [
+      const InventoryItem(
+        id: '1',
+        name: 'Drill',
+        description: 'Power Drill',
+        sku: 'DR-001',
+        stockQuantity: 10,
+        ownerId: 'system',
+      ),
+      const InventoryItem(
+        id: '2',
+        name: 'Hammer',
+        description: 'Claw Hammer',
+        sku: 'HM-002',
+        stockQuantity: 25,
+        ownerId: 'system',
+      ),
+      const InventoryItem(
+        id: '3',
+        name: 'Saw',
+        description: 'Circular Saw',
+        sku: 'SW-003',
+        stockQuantity: 5,
+        ownerId: 'system',
+      ),
+      const InventoryItem(
+        id: '4',
+        name: 'Wrench',
+        description: 'Adjustable Wrench',
+        sku: 'WR-004',
+        stockQuantity: 15,
+        ownerId: 'system',
+      ),
+      const InventoryItem(
+        id: '5',
+        name: 'Screwdriver',
+        description: 'Phillips Head',
+        sku: 'SD-005',
+        stockQuantity: 50,
+        ownerId: 'system',
+      ),
+      const InventoryItem(
+        id: '6',
+        name: 'Tape Measure',
+        description: '25ft Tape Measure',
+        sku: 'TM-006',
+        stockQuantity: 30,
+        ownerId: 'system',
+      ),
+      const InventoryItem(
+        id: '7',
+        name: 'Level',
+        description: '24-inch Level',
+        sku: 'LV-007',
+        stockQuantity: 12,
+        ownerId: 'system',
+      ),
+      const InventoryItem(
+        id: '8',
+        name: 'Pliers',
+        description: 'Needle Nose Pliers',
+        sku: 'PL-008',
+        stockQuantity: 20,
+        ownerId: 'system',
+      ),
+    ];
   }
 
   @override
-  Future<InventoryItem> updateItem(InventoryItem item) async {
-    try {
-      // Simulate API update with delay
-      await Future.delayed(const Duration(milliseconds: 500));
+  Future<InventoryItem> updateItem(
+    String id,
+    Map<String, dynamic> updates,
+  ) async {
+    await Future.delayed(const Duration(milliseconds: 500));
 
-      // In a real app, this would make a PUT/PATCH request
-      // For now, we return the updated item
-      return item;
-    } catch (e) {
-      throw Exception('Failed to update item: $e');
-    }
+    // In a real app, we would fetch the existing item, merge updates, save, and return.
+    // Here we mock the result.
+    return InventoryItem(
+      id: id,
+      name: updates['name'] as String? ?? 'Updated Item',
+      description: updates['description'] as String?,
+      sku: updates['sku'] as String? ?? 'UPD-000',
+      stockQuantity: updates['stockQuantity'] as int? ?? 0,
+      ownerId: 'system',
+    );
   }
 
   @override
-  Future<void> deleteItem(int id) async {
-    try {
-      // Simulate API delete with delay
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      // In a real app, this would make a DELETE request
-    } catch (e) {
-      throw Exception('Failed to delete item: $e');
-    }
-  }
-
-  @override
-  Future<InventoryItem> addItem(InventoryItem item) async {
-    try {
-      // Simulate API add with delay
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      // In a real app, this would make a POST request
-      // For now, return the item with a new ID
-      return item.copyWith(id: DateTime.now().millisecondsSinceEpoch);
-    } catch (e) {
-      throw Exception('Failed to add item: $e');
-    }
-  }
-
-  @override
-  Future<List<InventoryItem>> searchItems(String query) async {
-    // Client-side search - in a real app this would be a server-side search
-    final allItems = await fetchInventory();
-
-    if (query.isEmpty) return allItems;
-
-    final lowerQuery = query.toLowerCase();
-    return allItems
-        .where((item) =>
-            item.title.toLowerCase().contains(lowerQuery) ||
-            item.sku.toLowerCase().contains(lowerQuery))
-        .toList();
+  Future<void> deleteItem(String id) async {
+    await Future.delayed(const Duration(milliseconds: 500));
   }
 }

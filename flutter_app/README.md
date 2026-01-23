@@ -1,4 +1,4 @@
-# inventory_nexus
+# flutter_app
 
 A new Flutter project.
 
