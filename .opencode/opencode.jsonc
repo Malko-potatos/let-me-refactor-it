@@ -1,16 +1,17 @@
 {
-    "mcpServers": {
+  "$schema": "https://opencode.ai/config.json",
+    "mcp": {
         "stitch": {
-            "command": "npx",
-            "args": [
+            "type": "local",
+            "command": [
+                "npx",
                 "-y",
                 "@_davideast/stitch-mcp",
                 "start"
             ],
-            "env": {
-                // "GOOGLE_CLOUD_PROJECT": "your-project-id" // 필요시 주석 해제 후 설정
+            "environment": {
+                // "GOOGLE_CLOUD_PROJECT": "your-project-id"
             }
         }
-        // ... 기존 설정 유지
     }
 }

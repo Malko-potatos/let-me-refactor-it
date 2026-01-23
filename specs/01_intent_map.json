@@ -1,0 +1,143 @@
+[
+  {
+    "feature": "AppInitialization",
+    "user_goal": "앱 실행 시 사용자 인증 상태 확인 및 초기 데이터 로드",
+    "data_flow": {
+      "input": [
+        "localStorage.isLoggedIn"
+      ],
+      "process": [
+        "check_login_status",
+        "redirect_if_unauthorized"
+      ],
+      "output": [
+        "inventory_data"
+      ]
+    },
+    "constraints": "로그인 상태가 아닐 경우 login.html로 리다이렉트"
+  },
+  {
+    "feature": "FetchInventory",
+    "user_goal": "서버로부터 재고 목록 수신 및 화면 표시",
+    "data_flow": {
+      "input": [],
+      "process": [
+        "ajax_get_request",
+        "simulate_data_heavy_load",
+        "render_list"
+      ],
+      "output": [
+        "G_DATA",
+        "rendered_html"
+      ]
+    },
+    "constraints": "통신 중 로딩 오버레이 표시, 성공 시 인위적인 1초 지연 후 데이터 복제(성능 테스트용)"
+  },
+  {
+    "feature": "InventorySearch",
+    "user_goal": "검색어를 통한 재고 목록 필터링",
+    "data_flow": {
+      "input": [
+        "search_input_value"
+      ],
+      "process": [
+        "dom_filtering_by_text"
+      ],
+      "output": [
+        "visible_list_items"
+      ]
+    },
+    "constraints": "대소문자 구분 없이 텍스트 포함 여부로 필터링"
+  },
+  {
+    "feature": "InventoryDetail",
+    "user_goal": "선택한 재고 아이템의 상세 정보 확인",
+    "data_flow": {
+      "input": [
+        "item_id"
+      ],
+      "process": [
+        "find_item_by_id"
+      ],
+      "output": [
+        "alert_with_item_details"
+      ]
+    },
+    "constraints": "이벤트 버블링 제어 필요"
+  },
+  {
+    "feature": "EditInventoryItem",
+    "user_goal": "재고 아이템의 제목 수정",
+    "data_flow": {
+      "input": [
+        "item_id",
+        "new_title"
+      ],
+      "process": [
+        "prompt_user_input",
+        "simulate_api_update",
+        "update_global_state",
+        "re_render_list"
+      ],
+      "output": [
+        "updated_G_DATA"
+      ]
+    },
+    "constraints": "수정 후 전체 목록 재렌더링, 0.5초 시뮬레이션 지연"
+  },
+  {
+    "feature": "DeleteInventoryItem",
+    "user_goal": "재고 아이템 삭제",
+    "data_flow": {
+      "input": [
+        "item_id"
+      ],
+      "process": [
+        "confirm_user_action",
+        "simulate_api_delete",
+        "filter_global_state",
+        "re_render_list"
+      ],
+      "output": [
+        "updated_G_DATA"
+      ]
+    },
+    "constraints": "삭제 전 확인 팝업 노출, 삭제 후 전체 목록 재렌더링"
+  },
+  {
+    "feature": "CapturePhoto",
+    "user_goal": "카메라를 사용하여 사진 촬영 및 저장",
+    "data_flow": {
+      "input": [
+        "navigator.camera"
+      ],
+      "process": [
+        "get_picture_data_url",
+        "store_in_img_cache",
+        "prepend_to_ui"
+      ],
+      "output": [
+        "G_IMG_CACHE"
+      ]
+    },
+    "constraints": "Base64 데이터로 전역 변수 저장, 품질 설정 50"
+  },
+  {
+    "feature": "ScanBarcode",
+    "user_goal": "바코드를 스캔하여 아이템 ID 획득",
+    "data_flow": {
+      "input": [
+        "cordova.plugins.barcodeScanner"
+      ],
+      "process": [
+        "execute_scan",
+        "update_last_scan_state",
+        "prepend_to_ui"
+      ],
+      "output": [
+        "G_LAST_SCAN"
+      ]
+    },
+    "constraints": "스캔 취소 시 동작 안 함, 성공 시 스캔 결과 UI 상단 추가"
+  }
+]
